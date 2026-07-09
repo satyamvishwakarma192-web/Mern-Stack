@@ -25,6 +25,8 @@ async function registerUser(req,res){  // async functions
     const user = await userModel.create({
         FullName,Email,password: hashedPassword
     })// finally userr registerd
+
+
     const token = jwt.sign({
         id:user._id,},"de08efc2e1b2b31077bdc64e43ea4a2161adc4cba869b3449bc94fab3c814dec")
     
@@ -44,7 +46,37 @@ async function registerUser(req,res){  // async functions
 
 }
 
-async function loginUser(req,res){}//login user 
+async function loginUser(req,res){
+
+    const{Email,password} = req.body;
+     
+     const user = await userModel.findOne({Email})
+     if(!user){ // if it  not exist then status will be 400 !! 
+        return res.status(400).json({
+            message:" Invalid email or password"
+        })
+    }
+    const ispasswordValid = await bcrypt.compare(password,user.password)
+    if(!ispasswordValid){ // if password is not then status will be 400 !! 
+        return res.status(400).json({
+            message:" Invalid email or password"
+        })
+    }
+    const token = jwt.sign({
+        id:user._id,},"de08efc2e1b2b31077bdc64e43ea4a2161adc4cba869b3449bc94fab3c814dec")
+    res.cookie("token",token)
+    res.status(201).json({
+        message:"user  registered successfully",
+        user:{
+        _id: user._id,
+        Email: user.Email,
+        FullName: user.FullName
+        
+
+        }
+
+})
+}//login user 
 
 module.exports = {
     registerUser,
