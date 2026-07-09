@@ -1,6 +1,7 @@
 // server start 
 const app = require('./src/app');
-const connectDB = require("./src/db/db"); // importing the db 
+const connectDB = require("./src/db/db.js"); // importing the db 
+//connecting database from monogodb
 
 connectDB();
 app.listen(3000,() =>{
