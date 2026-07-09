@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 // function for connecting to db
 function connectDB() { 
-    mongoose.connect("mongodb://atlas-sql-6a4ea616d6dc363bc5cc1a6a-u48czw.a.query.mongodb.net/food-view?ssl=true&authSource=admin") //url of cluster1 for connection to db cluster1.m7t9ojd.mongodb.net
+    mongoose.connect("mongodb://food-view:food-view@ac-fde87y1-shard-00-00.m7t9ojd.mongodb.net:27017,ac-fde87y1-shard-00-01.m7t9ojd.mongodb.net:27017,ac-fde87y1-shard-00-02.m7t9ojd.mongodb.net:27017/?ssl=true&replicaSet=atlas-zez7mx-shard-0&authSource=admin&appName=Cluster1") //url of cluster1 for connection to db cluster1.m7t9ojd.mongodb.net
         .then(() => {
             console.log("MongoDB connected"); //callback when our db is connected successfully
         })
@@ -13,3 +13,4 @@ function connectDB() {
 }
 
 module.exports = connectDB; // exporting db 
+// function is called in server.js file

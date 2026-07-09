@@ -1,6 +1,6 @@
  
  //logic -- controller is created for callback req and res 
-const bcrypt = requuire("bcryptjs");
+const bcrypt = require("bcryptjs");
  //import bcrypt
 const jwt = require("jsonwebtoken"); 
 // import jwt
