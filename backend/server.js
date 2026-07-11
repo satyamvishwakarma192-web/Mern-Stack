@@ -10,7 +10,7 @@ require('dotenv').config();
 connectDB();
 //call
 
-app.listen(3000,() =>{
+app.listen(1820,() =>{
 
 console.log("server is running on the port 3000");
 })

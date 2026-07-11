@@ -5,7 +5,7 @@ const { timeStamp } = require("node:console");
 
 const userSchema = new monogoose.Schema( //user shcema 
     {
-        FullName:{              // user data names and properties
+        FullName:{              //mango user data names and properties
             type:String ,
             required:true,
         },
