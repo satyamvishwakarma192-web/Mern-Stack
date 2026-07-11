@@ -4,10 +4,14 @@ const bcrypt = require("bcryptjs");
  //import bcrypt
 const jwt = require("jsonwebtoken"); 
 // import jwt
+const foodPartnerModel = require("../models/foopartner.models");
+//import foodpartner models
+
 //import usermodel
  const userModel = require("../models/users.model");
 
-async function registerUser(req,res){  // async functions
+async function registerUser(req,res){  // async functions of registeruser
+
     const { FullName,Email,password} = req.body;   // get user data from req.body
 
     // but the data will be not getting from ,cause when express default server is created bydef that server cant read data from req.body
@@ -83,7 +87,22 @@ function logoutUser(req,res){
         message :"User LoggedOUT SuccessFully"
     });
 }
+
+async function registerUser(req,res){
+
+
+}
+
+
+
+
+
+
+
+
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,logoutUser
+
 } // by creating Object exporting bhot user controllers
