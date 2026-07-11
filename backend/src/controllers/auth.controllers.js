@@ -28,7 +28,7 @@ async function registerUser(req,res){  // async functions
 
 
     const token = jwt.sign({
-        id:user._id,},"de08efc2e1b2b31077bdc64e43ea4a2161adc4cba869b3449bc94fab3c814dec")
+        id:user._id,},process.env.JWT_SECRET)
     
     
     res.cookie("token",token)
@@ -63,16 +63,15 @@ async function loginUser(req,res){
         })
     }
     const token = jwt.sign({
-        id:user._id,},"de08efc2e1b2b31077bdc64e43ea4a2161adc4cba869b3449bc94fab3c814dec")
+        id: user._id,},process.env.JWT_SECRET)
     res.cookie("token",token)
     res.status(201).json({
-        message:"user  registered successfully",
+        message:"user login successfully",
         user:{
         _id: user._id,
         Email: user.Email,
-        FullName: user.FullName
-        
-
+        FullName: user.FullName,
+        password
         }
 
 })
