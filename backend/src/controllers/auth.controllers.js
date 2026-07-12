@@ -87,7 +87,7 @@ function logoutUser(req,res){
     res.status(200).json({
         message :"User LoggedOUT SuccessFully"
     });
-}
+}// LogoutUser
 
 async function registerFoodPartner(req,res){
  const{FullName,Email,password} = req.body;
@@ -122,8 +122,43 @@ async function registerFoodPartner(req,res){
      })
 
 }
+async function loginFoodPartner(req,res){
+    const{Email,password} = req.body;
+    const foodPartner = await foodPartner.findOne({
+        Email
+    })
+    if(!foodPartner){
+      return  res.status(400).json({
+            message:"Invalid Email and Password"
+        })
+    }
+    const isPasswordValid = await bcrypt.compare(password,foodPartner.password);
+    if(!isPasswordValid){
+        return res.status(400).json({
+            message:"Invaild Email and Password"
+        })
+    }
+   const token = jwt.sign({
+        id:user._id,},
+        process.env.JWT_SECRET)
+    
+    
+    res.cookie("token",token)
+    res.status(201).json({
+        message:"food partner logged successfully",
+        foodPartner:{
+        _id: foodPartner._id,
+        Email: foodPartner.Email,
+        FullName: foodPartner.FullName
+        
 
+        }}) }
 
+function logoutFoodPartner(req,res){
+    res.clearCookie("token");
+    res.status(200).json({
+        message :"Food Partner is logged out successfully"
+    });}
 
 
 
@@ -133,6 +168,6 @@ async function registerFoodPartner(req,res){
 
 module.exports = {
     registerUser,
-    loginUser,logoutUser
+    loginUser,logoutUser,registerFoodPartner,loginFoodPartner,logoutFoodPartner
 
 } // by creating Object exporting bhot user controllers
