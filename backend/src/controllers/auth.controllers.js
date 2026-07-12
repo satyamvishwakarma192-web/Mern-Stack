@@ -32,7 +32,8 @@ async function registerUser(req,res){  // async functions of registeruser
 
 
     const token = jwt.sign({
-        id:user._id,},process.env.JWT_SECRET)
+        id:user._id,},
+        process.env.JWT_SECRET)
     
     
     res.cookie("token",token)
@@ -88,8 +89,37 @@ function logoutUser(req,res){
     });
 }
 
-async function registerUser(req,res){
+async function registerFoodPartner(req,res){
+ const{FullName,Email,password} = req.body;
+  const isAccountAlreayExists = await foodPartnerModel.findOne({
+    Email
+  })
+  if(isAccountAlreayExists){
+    return res.status(400).json({
+        message:"Food Partner account already exists"
+    })
+  }
+  const foodPartner = await foodPartnerModel.create({
+    Name,
+    Email,
+    password:hashedPassword
+  })
+  const hashedPassword = await bcrypt.hash(password,10);
+  const token = jwt.sign({
+        id:foodPartner._id,},process.env.JWT_SECRET)
 
+  res.cookie("token",token)
+    res.status(201).json({
+        message:"user  registered successfully",
+        foodPartner:{
+        _id: user._id,
+        Email: user.Email,
+        FullName: user.FullName
+        
+
+        }
+        
+     })
 
 }
 
