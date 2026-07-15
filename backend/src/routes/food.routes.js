@@ -12,4 +12,4 @@ router.post('/',authmiddleware.authFoodPartnerMiddlewares, foodController.create
 
 
 
- modeule.exports = router;
+ module.exports = router;
