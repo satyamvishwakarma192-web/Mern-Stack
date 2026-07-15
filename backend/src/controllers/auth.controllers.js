@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
  //import bcrypt
 const jwt = require("jsonwebtoken"); 
 // import jwt
-const foodPartnerModel = require("../models/foopartner.models");
+const foodPartnerModel = require("../models/foodpartner.models");
 //import foodpartner models
 
 //import usermodel
