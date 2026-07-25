@@ -6,7 +6,7 @@ const connectDB = require('./src/db/db'); // importing the db and function is ca
 1
 
 //
-require('dotenv').config();
+require('dotenv').config()
 connectDB();
 //call
 
