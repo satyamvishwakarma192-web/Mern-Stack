@@ -91,7 +91,7 @@ function logoutUser(req,res){
 }// LogoutUser
 
 async function registerFoodPartner(req,res){
- const{FullName,Email,password} = req.body;
+ const{Name,Email,password} = req.body;
   const isAccountAlreayExists = await foodPartnerModel.findOne({
     Email
   })
@@ -100,22 +100,24 @@ async function registerFoodPartner(req,res){
         message:"Food Partner account already exists"
     })
   }
-  const foodPartner = await foodPartnerModel.create({
-    FullName,
-    Email,
-    password:hashedPassword
-  })
   const hashedPassword = await bcrypt.hash(password,10);
+  const foodPartner = await foodPartnerModel.create({
+    Name,
+    Email,
+    password: hashedPassword
+  })
+  
+
   const token = jwt.sign({
         id:foodPartner._id,},process.env.JWT_SECRET)
 
   res.cookie("token",token)
     res.status(201).json({
-        message:"user  registered successfully",
-        foodPartner:{
-        _id: user._id,
-        Email: user.Email,
-        FullName: user.FullName
+        message:"food partner registered successfully",
+        foodPartner: {
+        _id: foodPartner._id,
+        Email: foodPartner.Email,
+        Name: foodPartner.Name
         
 
         }
@@ -140,7 +142,7 @@ async function loginFoodPartner(req,res){
         })
     }
    const token = jwt.sign({
-        id:user._id,},
+        id:foodPartner._id,},
         process.env.JWT_SECRET)
     
     
@@ -150,7 +152,7 @@ async function loginFoodPartner(req,res){
         foodPartner:{
         _id: foodPartner._id,
         Email: foodPartner.Email,
-        FullName: foodPartner.FullName
+        Name: foodPartner.Name
         
 
         }}) }
