@@ -12,10 +12,10 @@ async function authFoodPartnerMiddlewares(req,res,next){
     try{
         const decoded = jwt.verify(token,process.env.JWT_SECRET);
 
-         const foodPartner = await foodPartnerModel.FindById(decoded.id);
+        const foodPartner = await foodPartnerModel.FindById(decoded.id);
 
-          req.foodPartner = foodPartner;
-           next()
+        req.foodPartner = foodPartner;
+        next()
 
     }
     catch(err){
@@ -24,6 +24,6 @@ async function authFoodPartnerMiddlewares(req,res,next){
          })
     }
 }
-module.exports = authFoodPartnerMiddlewares;
-
+module.exports = {authFoodPartnerMiddlewares
+}
 

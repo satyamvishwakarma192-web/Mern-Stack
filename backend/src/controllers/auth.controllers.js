@@ -51,7 +51,7 @@ async function registerUser(req,res){  // async functions of registeruser
 
 }
 
-async function loginUser(req,res){
+async function loginUser(req, res){
 
     const{Email,password} = req.body;
      
@@ -68,7 +68,8 @@ async function loginUser(req,res){
         })
     }
     const token = jwt.sign({
-        id: user._id,},process.env.JWT_SECRET)
+        id: user._id,},
+        process.env.JWT_SECRET)
     res.cookie("token",token)
     res.status(201).json({
         message:"user login successfully",
@@ -100,7 +101,7 @@ async function registerFoodPartner(req,res){
     })
   }
   const foodPartner = await foodPartnerModel.create({
-    Name,
+    FullName,
     Email,
     password:hashedPassword
   })
