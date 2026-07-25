@@ -10,7 +10,7 @@ const foodPartnerSchema = new mongoose.Schema({
     Email:{
         type:String,
         required:true,
-        unique:true
+        unique:true 
     },
     password:{ type:String,
         required:true,
@@ -23,4 +23,4 @@ const foodPartnerSchema = new mongoose.Schema({
 const foodPartnerModel = mongoose.model("foodpartner",foodPartnerSchema)
     
 
-module.exports =foodPartnerModel;
+module.exports = foodPartnerModel;

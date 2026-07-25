@@ -1,4 +1,7 @@
 const foodModel = require("../models/food.models")
 
-async function createFood(req,res,next){}
-module.exports = router;
+async function createFood(req,res){
+}
+module.exports = {
+    createFood
+}

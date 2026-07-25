@@ -1,4 +1,4 @@
-const foodPartnerModel = require("../models/foodpartner.model")
+const foodPartnerModel = require("../models/foodpartner.models")
 
 
 const jwt = require("jsonwebtoken");
@@ -10,7 +10,7 @@ async function authFoodPartnerMiddlewares(req,res,next){
         })
     }
     try{
-        const decoded =jwt.verify(token,process.env.JWT_SECRET);
+        const decoded = jwt.verify(token,process.env.JWT_SECRET);
 
          const foodPartner = await foodPartnerModel.FindById(decoded.id);
 
