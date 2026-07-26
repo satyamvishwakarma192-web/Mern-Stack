@@ -9,7 +9,7 @@ urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
 
 async function uploadFile(file, fileName) {
   try {
-    const result = await imagekit.upload({
+    const result = await imagekit.files.upload({
       file: file,
       fileName: fileName
     });
