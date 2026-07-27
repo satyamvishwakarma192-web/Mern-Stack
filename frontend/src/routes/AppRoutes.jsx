@@ -1,11 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-dom';
 import AuthPage from '../components/AuthPage';
 
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/user/login" replace />} />
         <Route
           path="/user/register"
           element={
@@ -16,6 +16,7 @@ const AppRoutes = () => {
               buttonText="Create account"
               footerText="Already have an account?"
               footerLinkText="Log in"
+              footerLinkTo="/user/login"
               extraFields={[
                 { label: 'Full name', type: 'text', placeholder: 'John Doe' },
                 { label: 'Phone number', type: 'tel', placeholder: '+1 234 567 8900' },
@@ -34,6 +35,7 @@ const AppRoutes = () => {
               buttonText="Log in"
               footerText="New here?"
               footerLinkText="Create account"
+              footerLinkTo="/user/register"
             />
           }
         />
@@ -47,6 +49,7 @@ const AppRoutes = () => {
               buttonText="Register"
               footerText="Already partnered with us?"
               footerLinkText="Log in"
+              footerLinkTo="/foodPartner/login"
               extraFields={[
                 { label: 'Restaurant / shop name', type: 'text', placeholder: 'Green Bites' },
                 { label: 'Owner name', type: 'text', placeholder: 'Alicia James' },
@@ -66,6 +69,7 @@ const AppRoutes = () => {
               buttonText="Log in"
               footerText="Need an account?"
               footerLinkText="Register now"
+              footerLinkTo="/foodPartner/register"
             />
           }
         />

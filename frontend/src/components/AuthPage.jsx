@@ -1,11 +1,24 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
-const AuthPage = ({ title, subtitle, roleLabel, buttonText, footerText, footerLinkText, extraFields = [] }) => {
+const AuthPage = ({
+  title,
+  subtitle,
+  roleLabel,
+  buttonText,
+  footerText,
+  footerLinkText,
+  footerLinkTo,
+  extraFields = []
+}) => {
   return (
     <div className="auth-shell">
+      <div className="auth-orb auth-orb--one" />
+      <div className="auth-orb auth-orb--two" />
+
       <div className="auth-card">
         <div className="auth-card__header">
           <div className="brand-mark">🍽️</div>
+          <span className="eyebrow">Fresh food access</span>
           <h1>{title}</h1>
           <p>{subtitle}</p>
         </div>
@@ -40,7 +53,7 @@ const AuthPage = ({ title, subtitle, roleLabel, buttonText, footerText, footerLi
 
           <p className="auth-footer">
             {footerText}{' '}
-            <a href="#">{footerLinkText}</a>
+            <Link to={footerLinkTo}>{footerLinkText}</Link>
           </p>
         </div>
       </div>
