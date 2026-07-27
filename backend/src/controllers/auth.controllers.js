@@ -12,11 +12,12 @@ const foodPartnerModel = require("../models/foodpartner.models");
 
 async function registerUser(req,res){  // async functions of registeruser
 
-    const { FullName,Email,password} = req.body;   // get user data from req.body
+    const { FullName,Email,password,PhoneNumber,Address } = req.body;   // get user data from req.body
 
-    // but the data will be not getting from ,cause when express default server is created bydef that server cant read data from req.body
-    // & heres its solnn >--middle ware [ for get data and send to req.body and it make it readable for server]
-    // ML of middleware in >> ./app.js
+    // ensure required fields are present
+    if(!FullName || !Email || !password || !PhoneNumber || !Address){
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
     const isUserAlreadyExists = await userModel.findOne({Email}) // for checking that used email is already exit or not 
     
@@ -27,7 +28,11 @@ async function registerUser(req,res){  // async functions of registeruser
     }
     const hashedPassword = await bcrypt.hash(password,10); // password hashing thru bcrypt
     const user = await userModel.create({
-        FullName,Email,password: hashedPassword
+        FullName,
+        Email,
+        password: hashedPassword,
+        PhoneNumber,
+        Address,
     })// finally userr registerd
 
 
@@ -38,12 +43,13 @@ async function registerUser(req,res){  // async functions of registeruser
     
     res.cookie("token",token)
     res.status(201).json({
-        message:"user  registered successfully",
+        message:"user registered successfully",
         user:{
         _id: user._id,
         Email: user.Email,
-        FullName: user.FullName
-        
+        FullName: user.FullName,
+        PhoneNumber: user.PhoneNumber,
+        Address: user.Address
 
         }
         
@@ -51,10 +57,10 @@ async function registerUser(req,res){  // async functions of registeruser
 
 }
 
-async function loginUser(req, res){
 
+async function loginUser(req, res){
+    
     const{Email,password} = req.body;
-     
      const user = await userModel.findOne({Email})
      if(!user){ // if it  not exist then status will be 400 !! 
         return res.status(400).json({
@@ -77,11 +83,12 @@ async function loginUser(req, res){
         _id: user._id,
         Email: user.Email,
         FullName: user.FullName,
-        password
+        PhoneNumber: user.PhoneNumber,
+        Address: user.Address
         }
 
 })
-}//login user 
+//login user 
 
 function logoutUser(req,res){
     res.clearCookie("token");
@@ -91,7 +98,10 @@ function logoutUser(req,res){
 }// LogoutUser
 
 async function registerFoodPartner(req,res){
- const{Name,Email,password} = req.body;
+ const{ Name, OwnerName, Email, password, PhoneNumber, Location } = req.body;
+  if(!Name || !OwnerName || !Email || !password || !PhoneNumber || !Location){
+    return res.status(400).json({ message: "Missing required fields" });
+  }
   const isAccountAlreayExists = await foodPartnerModel.findOne({
     Email
   })
@@ -103,13 +113,16 @@ async function registerFoodPartner(req,res){
   const hashedPassword = await bcrypt.hash(password,10);
   const foodPartner = await foodPartnerModel.create({
     Name,
+    OwnerName,
     Email,
-    password: hashedPassword
+    password: hashedPassword,
+    PhoneNumber,
+    Location,
   })
   
 
   const token = jwt.sign({
-        id:foodPartner._id,},process.env.JWT_SECRET)
+        id:foodPartner._1,},process.env.JWT_SECRET)
 
   res.cookie("token",token)
     res.status(201).json({
@@ -117,8 +130,10 @@ async function registerFoodPartner(req,res){
         foodPartner: {
         _id: foodPartner._id,
         Email: foodPartner.Email,
-        Name: foodPartner.Name
-        
+        Name: foodPartner.Name,
+        OwnerName: foodPartner.OwnerName,
+        PhoneNumber: foodPartner.PhoneNumber,
+        Location: foodPartner.Location
 
         }
         
@@ -171,6 +186,6 @@ function logoutFoodPartner(req,res){
 
 module.exports = {
     registerUser,
-    loginUser,logoutUser,registerFoodPartner,loginFoodPartner,logoutFoodPartner
-
-} // by creating Object exporting bhot user controllers
+    loginUser,logoutUser,registerFoodPartner,loginFoodPartner, logoutFoodPartner
+    };
+    /* by creating Object exporting bhot user controllers   */}
