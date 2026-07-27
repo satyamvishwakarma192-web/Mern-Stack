@@ -1,5 +1,5 @@
 const foodPartnerModel = require("../models/foodpartner.models")
-
+const userModel = require("../models/users.model");
 
 const jwt = require("jsonwebtoken");
 async function authFoodPartnerMiddlewares(req,res,next){

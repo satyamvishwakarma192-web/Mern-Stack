@@ -1,4 +1,7 @@
+
 const foodModel = require("../models/food.models");
+const userModel = require("../models/users.model");
+
 const storageService = require("../services/storage.services");
 const{ v4: uuid} = require("uuid");
 
@@ -19,7 +22,7 @@ async function createFood(req,res){
 
 }
 async function getFoodItems(req, res) {
-    const foodItems = await foodModel.find({ })
+    const foodItems = await foodModel.find({})
     res.status(200).json({
         message: "Food items fetched successfully",
         foodItems
