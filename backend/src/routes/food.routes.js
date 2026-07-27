@@ -11,16 +11,16 @@ const upload = multer({
 
 
 })
-router.post('/',
-authMiddleware.authFoodPartnerMiddlewares,
+router.post('/',authMiddleware.authFoodPartnerMiddlewares,
 upload.single("video"),
 foodController.createFood
 )/* POST /api/food/ (protected)*/
 
+
 /* GET /api/food/ [protected] */
 router.get('/',
     authMiddleware.authUserMiddleware,
-    foodController.getFoodItem)
+    foodController.getFoodItems)
 
 
 

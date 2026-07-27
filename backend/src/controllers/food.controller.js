@@ -19,12 +19,7 @@ async function createFood(req,res){
 
 }
 async function getFoodItems(req, res) {
-    const foodItems = await foodModel.find({
-        name: req.body.name,
-        description: req.body.description,
-        video: fileUploadResult.url,
-        foodPartner: req.foodPartner._id
-    })
+    const foodItems = await foodModel.find({ })
     res.status(200).json({
         message: "Food items fetched successfully",
         foodItems
