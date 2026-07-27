@@ -86,9 +86,8 @@ async function loginUser(req, res){
         PhoneNumber: user.PhoneNumber,
         Address: user.Address
         }
-
-})
-//login user 
+    });
+}
 
 function logoutUser(req,res){
     res.clearCookie("token");
@@ -122,7 +121,7 @@ async function registerFoodPartner(req,res){
   
 
   const token = jwt.sign({
-        id:foodPartner._1,},process.env.JWT_SECRET)
+        id:foodPartner._id,},process.env.JWT_SECRET)
 
   res.cookie("token",token)
     res.status(201).json({
@@ -186,6 +185,10 @@ function logoutFoodPartner(req,res){
 
 module.exports = {
     registerUser,
-    loginUser,logoutUser,registerFoodPartner,loginFoodPartner, logoutFoodPartner
-    };
-    /* by creating Object exporting bhot user controllers   */}
+    loginUser,
+    logoutUser,
+    registerFoodPartner,
+    loginFoodPartner,
+    logoutFoodPartner
+};
+/* by creating Object exporting bhot user controllers   */
