@@ -1,0 +1,43 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # Must be named exactly `copilot-setup-steps`
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js (for frontend & backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Install Playwright test runner (frontend)
+        run: npm install --prefix frontend -D @playwright/test
+
+      - name: Install Playwright browsers (frontend)
+        working-directory: frontend
+        run: npx playwright install --with-deps
+
+      - name: Smoke test: list Playwright browsers
+        working-directory: frontend
+        run: npx playwright --version || true
+
+      # Optionally, Copilot can run a quick E2E smoke test here if tests are added.
