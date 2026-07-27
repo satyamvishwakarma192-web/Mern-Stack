@@ -5,15 +5,13 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        {/*export routers*/
+        {/* export routes */}
         <Route path="/user/register" element={<h1>User Registration</h1>} />,
         <Route path="/user/login" element={<h1>User Login</h1>} />,
-        <Route path="/user/foodPartner/register" element={<h1>Food Partner Registration</h1>} />,
-        <Route path="/user/foodPartner/login" element={<h1>Food Partner Login</h1>} />
-        }
-      </Routes>
+        <Route path="/foodPartner/register" element={<h1>Food Partner Registration</h1>} />,
+        <Route path="/foodPartner/login" element={<h1>Food Partner Login</h1>} />      </Routes>
     </Router>
   );
 };
 
-export default Approutes;
+export default AppRoutes;
