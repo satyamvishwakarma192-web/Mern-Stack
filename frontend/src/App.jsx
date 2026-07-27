@@ -1,6 +1,8 @@
+import React from 'react'
 
-import Approutes from './routes/AppRoutes'
-import './App.css'
+import AppRoutes from './routes/AppRoutes.jsx'
+import './styles/variables.css'
+import './styles/style.css'
 
 function App() {
  
