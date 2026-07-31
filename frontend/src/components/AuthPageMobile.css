@@ -1,0 +1,21 @@
+.auth-shell {
+  padding: 16px;
+}
+
+.auth-card__header {
+  padding: 24px 24px 12px;
+}
+
+.auth-card__body {
+  padding: 0 24px 24px;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    border-radius: 18px;
+  }
+
+  .auth-card__header h1 {
+    font-size: 1.5rem;
+  }
+}
