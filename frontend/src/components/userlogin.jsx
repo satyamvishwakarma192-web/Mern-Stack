@@ -1,16 +1,23 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import AuthPage from './AuthPage';
 
 const UserLogin = () => {
+  const navigate = useNavigate();
+
   const handleSubmit = async (formData) => {
     const response = await axios.post(
-      '/api/auth/user/login',
+      'http://localhost:3000/api/auth/user/login',
       {
         Email: formData.Email,
         password: formData.password
       },
       { withCredentials: true }
     );
+
+    if (response?.data) {
+      navigate('/home');
+    }
 
     return {
       success: true,

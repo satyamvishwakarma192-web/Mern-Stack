@@ -20,9 +20,7 @@ const UserRegister = () => {
       success: true,
       message: response.data.message || 'User registered successfully'
     };
-    navigate('/user/login'); // Redirect to login page after successful registration
-    navigate(0); // Refresh the page to reflect the changes
-    navigate('/'); // Redirect to login page after successful registration
+ 
   };
 
   return (

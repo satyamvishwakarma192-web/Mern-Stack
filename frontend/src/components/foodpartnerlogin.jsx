@@ -1,16 +1,23 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import AuthPage from './AuthPage';
 
 const FoodPartnerLogin = () => {
+  const navigate = useNavigate();
+
   const handleSubmit = async (formData) => {
     const response = await axios.post(
-      '/api/auth/foodPartner/login',
+      'http://localhost:3000/api/auth/foodPartner/login',
       {
         Email: formData.Email,
         password: formData.password
       },
       { withCredentials: true }
     );
+
+    if (response?.data) {
+      navigate('/home');
+    }
 
     return {
       success: true,

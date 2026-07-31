@@ -5,7 +5,7 @@ import {Navigate, useNavigate} from 'react-router-dom';
 const FoodPartnerRegister = () => {
   const handleSubmit = async (formData) => {
     const response = await axios.post(
-      '/api/auth/foodPartner/register',
+      'http://localhost:3000/api/auth/foodPartner/register',
       {
         Name: formData.Name,
         OwnerName: formData.OwnerName,
@@ -21,9 +21,8 @@ const FoodPartnerRegister = () => {
       success: true,
       message: response.data.message || 'Food partner registered successfully'
     };
-    navigate:
-    
   };
+  
 
   return (
     <AuthPage

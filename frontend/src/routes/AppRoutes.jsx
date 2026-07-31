@@ -3,16 +3,18 @@ import UserRegister from '../components/userregister';
 import UserLogin from '../components/userlogin';
 import FoodPartnerRegister from '../components/foodpartnerregister';
 import FoodPartnerLogin from '../components/foodpartnerlogin';
+import HomePage from '../components/HomePage';
 
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<Navigate to="/user/login" replace />} />
         <Route path="/user/register" element={<UserRegister />} />
         <Route path="/user/login" element={<UserLogin />} />
         <Route path="/foodPartner/register" element={<FoodPartnerRegister />} />
         <Route path="/foodPartner/login" element={<FoodPartnerLogin />} />
+        <Route path="/home" element={<HomePage />} />
       </Routes>
     </Router>
   );
