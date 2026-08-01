@@ -16,10 +16,11 @@ upload.single("video"),
 foodController.createFood
 )/* POST /api/food/ (protected)*/
 
+router.delete('/:id', authMiddleware.authFoodPartnerMiddlewares, foodController.deleteFoodItem)
 
 /* GET /api/food/ [protected] */
 router.get('/',
-    authMiddleware.authUserMiddleware,
+    authMiddleware.authFoodPartnerMiddlewares,
     foodController.getFoodItems)
 
 

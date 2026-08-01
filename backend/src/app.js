@@ -10,9 +10,10 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173',    
     credentials: true // Replace
-})); // cross origin resource sharing is used for frontend and backend communication
+})); 
+// cross origin resource sharing is used for frontend and backend communication
 
 app.use(express.json());// middle ware
 

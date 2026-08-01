@@ -85,6 +85,7 @@ async function loginUser(req, res){
         FullName: user.FullName,
         PhoneNumber: user.PhoneNumber,
         Address: user.Address
+       
         }
     });
 }

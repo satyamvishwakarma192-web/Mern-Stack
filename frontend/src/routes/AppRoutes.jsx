@@ -3,6 +3,7 @@ import UserRegister from '../components/userregister';
 import UserLogin from '../components/userlogin';
 import FoodPartnerRegister from '../components/foodpartnerregister';
 import FoodPartnerLogin from '../components/foodpartnerlogin';
+import FoodPartnerProfile from '../components/foodpartnerprofile';
 import HomePage from '../components/HomePage';
 
 const AppRoutes = () => {
@@ -14,6 +15,7 @@ const AppRoutes = () => {
         <Route path="/user/login" element={<UserLogin />} />
         <Route path="/foodPartner/register" element={<FoodPartnerRegister />} />
         <Route path="/foodPartner/login" element={<FoodPartnerLogin />} />
+        <Route path="/foodPartner/profile" element={<FoodPartnerProfile />} />
         <Route path="/home" element={<HomePage />} />
       </Routes>
     </Router>
