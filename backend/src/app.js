@@ -59,13 +59,16 @@ app.get("/",(req,res) =>  //api created here <<---
     res.send("Hello world");
 })
 
-// centralized error handler
+// centralized error handler — don't leak internal error messages in production
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
     if (err && err.name === 'MulterError') {
         return res.status(400).json({ message: err.message });
     }
-    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
+    const status = err.status || 500;
+    const isProd = process.env.NODE_ENV === 'production';
+    const message = isProd ? 'Internal Server Error' : (err.message || 'Internal Server Error');
+    res.status(status).json({ message });
 });
 
 module.exports = app;
