@@ -47,6 +47,22 @@ async function getFoodItems(req, res) {
   });
 }
 
+// Public endpoint for feeds (no auth) - returns recent food items with partner info
+async function getPublicFoodItems(req, res) {
+  try {
+    const foodItems = await foodModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .populate('foodPartner', 'Name OwnerName');
+
+    res.status(200).json({ message: 'Public food items fetched', foodItems });
+  } catch (error) {
+    console.error('getPublicFoodItems error:', error);
+    res.status(500).json({ message: 'Unable to fetch public food items.' });
+  }
+}
+
 async function deleteFoodItem(req, res) {
   try {
     const foodItem = await foodModel.findOne({
@@ -71,4 +87,5 @@ module.exports = {
   createFood,
   getFoodItems,
   deleteFoodItem,
+  getPublicFoodItems,
 };

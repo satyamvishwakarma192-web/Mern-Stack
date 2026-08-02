@@ -1,143 +1,180 @@
-import { useNavigate } from 'react-router-dom';
-import { Scroller } from '@/components/ui/scroller-1';
-import ProfileCard from '@/components/ui/profile-card';
+import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 
-const feedItems = [
-  {
-    id: 1,
-    partner: 'Spice Route Kitchen',
-    title: 'Homemade Tandoori Wrap',
-    description: 'Freshly grilled paneer tucked into warm flatbread with house chutney.',
-    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
-    likes: 430,
-    comments: 28,
-  },
-  {
-    id: 2,
-    partner: 'GreenLeaf Meals',
-    title: 'Seasonal Salad Bowl',
-    description: 'Crisp greens, roasted veggies and tahini dressing served in a reusable bowl.',
-    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80',
-    likes: 298,
-    comments: 16,
-  },
-  {
-    id: 3,
-    partner: 'Urban Bites',
-    title: 'Street Style Burger',
-    description: 'Juicy plant-based patty with caramelized onions and smoky sauce.',
-    imageUrl: 'https://images.unsplash.com/photo-1555992336-03a23c4a0369?auto=format&fit=crop&w=1200&q=80',
-    likes: 512,
-    comments: 42,
-  },
-  {
-    id: 4,
-    partner: 'Sweet Tooth',
-    title: 'Mango Cheesecake',
-    description: 'Silky no-bake cheesecake topped with fresh mango slices.',
-    imageUrl: 'https://images.unsplash.com/photo-1498579809087-ef1e558fd1ef?auto=format&fit=crop&w=1200&q=80',
-    likes: 360,
-    comments: 21,
-  },
-];
+export default function HomePage() {
+  const [index, setIndex] = useState(0);
+  const [feedItems, setFeedItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const startY = useRef(null);
+  const lock = useRef(false);
+  const containerRef = useRef(null);
+  const videoRefs = useRef([]);
 
-const HomePage = () => {
-  const navigate = useNavigate();
+  useEffect(() => {
+    // fetch public feed
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/api/food/public');
+        if (!mounted) return;
+        const items = res.data.foodItems || [];
+        // normalize items to expected shape
+        const normalized = items.map((it) => ({
+          id: it._id,
+          partner: it.foodPartner?.Name || it.foodPartner?.OwnerName || 'Partner',
+          title: it.name || '',
+          description: it.description || '',
+          imageUrl: it.imageUrl || '',
+          video: it.video || '',
+          likes: it.likes || 0,
+          comments: it.comments || 0,
+        }));
+        setFeedItems(normalized.length ? normalized : []);
+      } catch (err) {
+        console.error('Failed to load feed', err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => (mounted = false);
+  }, []);
+
+  const total = feedItems.length || 1;
+
+  useEffect(() => {
+    // handle keyboard navigation
+    const onKey = (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') next();
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') prev();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [index, feedItems]);
+
+  useEffect(() => {
+    // play current video, pause others
+    videoRefs.current.forEach((el, i) => {
+      if (!el) return;
+      if (i === index) {
+        el.play().catch(() => {});
+      } else {
+        el.pause();
+      }
+    });
+  }, [index, feedItems]);
+
+  function clamp(i) {
+    if (feedItems.length === 0) return 0;
+    if (i < 0) return feedItems.length - 1;
+    if (i >= feedItems.length) return 0;
+    return i;
+  }
+
+  function next() {
+    if (lock.current) return;
+    lock.current = true;
+    setIndex((i) => clamp(i + 1));
+    setTimeout(() => (lock.current = false), 400);
+  }
+  function prev() {
+    if (lock.current) return;
+    lock.current = true;
+    setIndex((i) => clamp(i - 1));
+    setTimeout(() => (lock.current = false), 400);
+  }
+
+  function onWheel(e) {
+    if (Math.abs(e.deltaY) < 10) return;
+    if (e.deltaY > 0) next();
+    else prev();
+  }
+
+  function onTouchStart(e) {
+    startY.current = e.touches[0].clientY;
+  }
+  function onTouchEnd(e) {
+    if (startY.current == null) return;
+    const endY = e.changedTouches[0].clientY;
+    const diff = startY.current - endY;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) next();
+      else prev();
+    }
+    startY.current = null;
+  }
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-black text-white">Loading feed…</div>
+    );
+  }
+
+  if (!feedItems.length) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-black text-white">No reels available</div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 px-4 py-6 sm:px-6">
-      <header className="mx-auto flex max-w-6xl flex-col gap-5 px-2 sm:px-0">
-        <div className="flex flex-col gap-4 rounded-[32px] bg-white/90 p-5 shadow-xl shadow-slate-200/60 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-orange-500">Welcome back</p>
-            <h1 className="mt-2 text-3xl font-semibold sm:text-4xl text-slate-900">Your Food Reels</h1>
-            <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
-              Scroll through newly uploaded reels from food partners. Each reel shows what is available now, with smooth snap scrolling and clean card detail.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:auto-cols-fr sm:grid-flow-col sm:grid">
-            <button
-              type="button"
-              onClick={() => navigate('/user/login')}
-              className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600"
-            >
-              Back to login
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto mt-8 max-w-6xl px-2 sm:px-0">
-        <section className="rounded-[32px] bg-white/90 p-4 shadow-xl shadow-slate-200/60 backdrop-blur-xl sm:p-6 relative overflow-hidden">
-          <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-            <div className="rounded-[28px] bg-slate-950/5 p-5 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Live stats</p>
-              <div className="mt-4 space-y-4">
-                <div className="rounded-3xl bg-white p-4 shadow-sm">
-                  <p className="text-sm text-slate-500">Reels served</p>
-                  <p className="mt-2 text-3xl font-semibold text-slate-900">680</p>
-                </div>
-                <div className="rounded-3xl bg-white p-4 shadow-sm">
-                  <p className="text-sm text-slate-500">Food partners</p>
-                  <p className="mt-2 text-3xl font-semibold text-slate-900">42+</p>
-                </div>
-                <div className="rounded-3xl bg-white p-4 shadow-sm">
-                  <p className="text-sm text-slate-500">Happy users</p>
-                  <p className="mt-2 text-3xl font-semibold text-slate-900">1,920</p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Featured feed</p>
-                  <h2 className="text-2xl font-semibold text-slate-900">Food partner reel stream</h2>
-                </div>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
-                  {feedItems.length} reels
-                </span>
-              </div>
-              <div className="mb-6">
-                <ProfileCard />
-              </div>
-            </div>
-          </div>
-
-          <Scroller overflow="y" height="calc(100vh - 220px)" withButtons childrenContainerClassName="gap-6 snap-y snap-mandatory">
-            {feedItems.map((item) => (
-              <article
-                key={item.id}
-                className="snap-start overflow-hidden rounded-[28px] border border-slate-200 bg-slate-950/5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl"
-              >
-                <div className="relative h-[480px] overflow-hidden bg-slate-900">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="h-full w-full object-cover transition duration-700 ease-out hover:scale-105"
+    <div className="h-screen w-screen bg-black text-white overflow-hidden">
+      <div
+        ref={containerRef}
+        onWheel={onWheel}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        className="h-full w-full relative"
+      >
+        <div
+          className="absolute inset-0 transition-transform duration-400"
+          style={{ transform: `translateY(-${index * 100}vh)` }}
+        >
+          {feedItems.map((item, i) => (
+            <section key={item.id} className="h-screen w-screen snap-start relative flex items-end justify-start">
+              <div className="absolute inset-0">
+                {item.video ? (
+                  <video
+                    ref={(el) => (videoRefs.current[i] = el)}
+                    src={item.video}
+                    className="h-full w-full object-cover"
+                    playsInline
+                    muted
+                    loop
+                    controls={false}
+                    preload="auto"
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent px-5 py-4 text-white">
-                    <p className="text-sm font-medium uppercase tracking-[0.32em] text-orange-300">{item.partner}</p>
-                    <h3 className="mt-2 text-2xl font-semibold">{item.title}</h3>
-                    <p className="mt-2 max-w-xl text-sm text-slate-100/90">{item.description}</p>
-                  </div>
+                ) : (
+                  <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              </div>
+
+              <div className="relative z-10 p-6 pb-12 max-w-lg">
+                <p className="text-xs uppercase tracking-wider text-orange-300">{item.partner}</p>
+                <h2 className="mt-2 text-3xl font-bold">{item.title}</h2>
+                <p className="mt-3 text-sm text-white/90 max-w-md">{item.description}</p>
+                <div className="mt-6 flex items-center gap-3">
+                  <button className="rounded-full bg-white/10 px-3 py-2 text-sm">{item.likes.toLocaleString()} ♥</button>
+                  <button className="rounded-full bg-white/10 px-3 py-2 text-sm">{item.comments} comments</button>
                 </div>
-                <div className="space-y-3 p-5 sm:p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
-                    <span className="rounded-full bg-slate-100 px-3 py-2 text-slate-800">{item.likes.toLocaleString()} likes</span>
-                    <span className="rounded-full bg-slate-100 px-3 py-2 text-slate-800">{item.comments} comments</span>
-                  </div>
-                  <div className="rounded-3xl bg-slate-100 p-4 text-sm text-slate-700">
-                    Food partner uploaded this reel to showcase the latest menu item and help users discover daily specials.
-                  </div>
-                </div>
-              </article>
-            ))}
-          </Scroller>
-        </section>
-      </main>
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <div className="absolute right-4 top-1/2 z-20 -translate-y-1/2 flex flex-col gap-3">
+          <button onClick={prev} className="rounded-full bg-black/40 p-3">↑</button>
+          <button onClick={next} className="rounded-full bg-black/40 p-3">↓</button>
+        </div>
+
+        <div className="absolute left-4 top-6 z-20">
+          <div className="rounded-full bg-black/40 px-4 py-2 text-sm">Reels</div>
+        </div>
+
+        <div className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-sm text-white/80">
+          {index + 1} / {feedItems.length}
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default HomePage;

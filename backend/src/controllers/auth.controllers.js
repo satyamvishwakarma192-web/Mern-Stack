@@ -1,4 +1,4 @@
- 
+﻿ 
  //logic -- controller is created for callback req and res 
 const bcrypt = require("bcryptjs");
  //import bcrypt
@@ -9,6 +9,20 @@ const foodPartnerModel = require("../models/foodpartner.models");
 
 //import usermodel
  const userModel = require("../models/users.model");
+
+// helper to create JWT with expiry
+function createToken(id) {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+}
+
+function cookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  };
+}
 
 async function registerUser(req,res){  // async functions of registeruser
 
@@ -36,12 +50,9 @@ async function registerUser(req,res){  // async functions of registeruser
     })// finally userr registerd
 
 
-    const token = jwt.sign({
-        id:user._id,},
-        process.env.JWT_SECRET)
+    const token = createToken(user._id);
     
-    
-    res.cookie("token",token)
+    res.cookie('token', token, cookieOptions());
     res.status(201).json({
         message:"user registered successfully",
         user:{
@@ -73,10 +84,8 @@ async function loginUser(req, res){
             message:" Invalid email or password"
         })
     }
-    const token = jwt.sign({
-        id: user._id,},
-        process.env.JWT_SECRET)
-    res.cookie("token",token)
+    const token = createToken(user._id);
+    res.cookie('token', token, cookieOptions());
     res.status(201).json({
         message:"user login successfully",
         user:{
@@ -121,10 +130,9 @@ async function registerFoodPartner(req,res){
   })
   
 
-  const token = jwt.sign({
-        id:foodPartner._id,},process.env.JWT_SECRET)
+  const token = createToken(foodPartner._id);
 
-  res.cookie("token",token)
+  res.cookie('token', token, cookieOptions());
     res.status(201).json({
         message:"food partner registered successfully",
         foodPartner: {
@@ -156,12 +164,10 @@ async function loginFoodPartner(req,res){
             message:"Invaild Email and Password"
         })
     }
-   const token = jwt.sign({
-        id:foodPartner._id,},
-        process.env.JWT_SECRET)
+   const token = createToken(foodPartner._id);
     
     
-    res.cookie("token",token)
+    res.cookie('token', token, cookieOptions());
     res.status(201).json({
         message:"food partner logged successfully",
         foodPartner:{
@@ -177,8 +183,6 @@ function logoutFoodPartner(req,res){
     res.status(200).json({
         message :"Food Partner is logged out successfully"
     });}
-
-
 
 
 
